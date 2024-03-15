@@ -532,32 +532,37 @@ Windows 11ではイベントログに保存するときにまったく異なる`
 この情報があれば、タイムラインを生成する際に`--include-computer`または`--exclude-computer`オプションを使い、コンピュータ別に複数のタイムラインを生成したり、特定のコンピュータからのイベントを除外したりすることで、タイムライン生成をより効率的にすることができます。
 
 ```
-Usage: computer-metrics <INPUT> [OPTIONS]
+Usage:
+  computer-metrics <INPUT> [OPTIONS]
+
+Options:
+  -h, --help  Print help
 
 Input:
-  -d, --directory <DIR>        .evtxファイルを持つディレクトリのパス
-  -f, --file <FILE>            1つの.evtxファイルに対して解析を行う
-  -l, --live-analysis          ローカル端末のC:\Windows\System32\winevt\Logsフォルダを解析する
-  -J, --JSON-input             .evtxファイルの代わりにJSON形式のログファイル(.jsonまたは.jsonl)をスキャンする
-  -x, --recover-records        空ページからevtxレコードをカービングする (デフォルト: 無効)
+  -d, --directory <DIR>  .evtxファイルを持つディレクトリのパス
+  -f, --file <FILE>      1つの.evtxファイルに対して解析を行う
+  -l, --live-analysis    ローカル端末のC:\Windows\System32\winevt\Logsフォルダを解析する
+
+General Options:
+  -C, --clobber                        結果ファイルを上書きする
+  -h, --help                           ヘルプメニューを表示する
+  -J, --JSON-input                     .evtxファイルの代わりにJSON形式のログファイル(.jsonまたは.jsonl)をスキャンする
+  -Q, --quiet-errors                   Quiet errorsモード: エラーログを保存しない
+  -x, --recover-records                スラックスペースからevtxレコードをカービングする (デフォルト: 無効)
+  -c, --rules-config <DIR>             ルールフォルダのコンフィグディレクトリ (デフォルト: ./rules/config)
+      --target-file-ext <FILE-EXT...>  evtx以外の拡張子を解析対象に追加する。 (例１: evtx_data 例２: evtx1,evtx2)
+  -t, --threads <NUMBER>               スレッド数 (デフォルト: パフォーマンスに最適な数値)
 
 Filtering:
       --timeline-offset <OFFSET>  オフセットに基づく最近のイベントのスキャン (例: 1y, 3M, 30d, 24h, 30m)
 
 Output:
-  -o, --output <FILE>       イベントIDに基づくイベントの合計と割合の集計を出力する (例: computer-metrics.csv)
+  -o, --output <FILE>  イベントIDに基づくイベントの合計と割合の集計を出力する (例: computer-metrics.csv)
 
 Display Settings:
-      --no-color       カラーで出力しない
-  -q, --quiet          Quietモード: 起動バナーを表示しない
-  -v, --verbose        詳細な情報を出力する
-
-General Options:
-  -C, --clobber                          結果ファイルを上書きする
-  -Q, --quiet-errors                     Quiet errorsモード: エラーログを保存しない
-  -c, --rules-config <DIR>               ルールフォルダのコンフィグディレクトリ (デフォルト: ./rules/config)
-      --target-file-ext <FILE-EXT...>  evtx以外の拡張子を解析対象に追加する。 (例１: evtx_data 例２: evtx1,evtx2)
-  -t, --threads <NUMBER>                 スレッド数 (デフォルト: パフォーマンスに最適な数値)
+      --no-color  カラーで出力しない
+  -q, --quiet     Quietモード: 起動バナーを表示しない
+  -v, --verbose   詳細な情報を出力する                
 ```
 
 #### `computer-metrics`コマンドの使用例
@@ -575,10 +580,53 @@ General Options:
 このコマンドは検知ルールを使用しないので、すべてのイベントをスキャンします。
 
 ```
-Usage: eid-metrics <INPUT> [OPTIONS]
+Usage:
+  eid-metrics <INPUT> [OPTIONS]
+
+Options:
+  -h, --help  Print help
 
 Input:
-  -d, --directory <DIR>        .evtxファイルを持つディレクトリのパス
+  -d, --directory <DIR>  .evtxファイルを持つディレクトリのパス
+  -f, --file <FILE>      File path to one .evtx file
+  -l, --live-analysis    Analyze the local C:\Windows\System32\winevt\Logs folder
+
+General Options:
+  -C, --clobber                        Overwrite files when saving
+  -h, --help                           Show the help menu
+  -J, --JSON-input                     Scan JSON formatted logs instead of .evtx (.json or .jsonl)
+  -Q, --quiet-errors                   Quiet errors mode: do not save error logs
+  -x, --recover-records                Carve evtx records from slack space (default: disabled)
+  -c, --rules-config <DIR>             Specify custom rule config directory (default: ./rules/config)
+      --target-file-ext <FILE-EXT...>  Specify additional evtx file extensions (ex: evtx_data)
+  -t, --threads <NUMBER>               Number of threads (default: optimal number for performance)
+
+Filtering:
+      --exclude-computer <COMPUTER...>  Do not scan specified computer names (ex: ComputerA) (ex: ComputerA,ComputerB)
+      --include-computer <COMPUTER...>  Scan only specified computer names (ex: ComputerA) (ex: ComputerA,ComputerB)
+      --timeline-offset <OFFSET>        Scan recent events based on an offset (ex: 1y, 3M, 30d, 24h, 30m)
+
+Output:
+  -o, --output <FILE>  Save the Metrics in CSV format (ex: metrics.csv)
+
+Display Settings:
+      --no-color  Disable color output
+  -q, --quiet     Quiet mode: do not display the launch banner
+  -v, --verbose   Output verbose information
+
+Time Format:
+      --European-time     Output timestamp in European time format (ex: 22-02-2022 22:00:00.123 +02:00)
+      --ISO-8601          Output timestamp in ISO-8601 format (ex: 2022-02-22T10:10:10.1234567Z) (Always UTC)
+      --RFC-2822          Output timestamp in RFC 2822 format (ex: Fri, 22 Feb 2022 22:00:00 -0600)
+      --RFC-3339          Output timestamp in RFC 3339 format (ex: 2022-02-22 22:00:00.123456-06:00)
+      --US-military-time  Output timestamp in US military time format (ex: 02-22-2022 22:00:00.123 -06:00)
+      --US-time           Output timestamp in US time format (ex: 02-22-2022 10:00:00.123 PM -06:00)
+  -U, --UTC               Output time in UTC format (default: local time)
+
+
+
+Input:
+  -d, --directory <DIR>        
   -f, --file <FILE>            1つの.evtxファイルに対して解析を行う
   -l, --live-analysis          ローカル端末のC:\Windows\System32\winevt\Logsフォルダを解析する
   -J, --JSON-input             .evtxファイルの代わりにJSON形式のログファイル(.jsonまたは.jsonl)をスキャンする
